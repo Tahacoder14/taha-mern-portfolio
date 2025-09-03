@@ -17,32 +17,23 @@ const Portfolio = () => {
   const [activeCategory, setActiveCategory] = useState('All');
 
   // Fetch projects from the backend when the component mounts
-  useEffect(() => {
+   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        // Make sure your backend server is running!
-        const { data } = await axios.get('http://localhost:5000/api/projects');
+        const { data } = await axios.get('/api/projects'); // Use relative path
         setProjects(data.data || []);
-        setFilteredProjects(data.data || []);
       } catch (error) {
         console.error("Error fetching projects:", error);
-        // In case of an error (e.g., backend is down), show sample data
-        setProjects([
-             {_id: 1, title: "Sample Project 1", description: "This is a sample project for display. Connect your backend to see your own projects.", imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1170&q=80", repoUrl: "#", liveUrl: "#", category: "Website"},
-             {_id: 2, title: "Sample Project 2", description: "This is a sample project for display. Connect your backend to see your own projects.", imageUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1170&q=80", repoUrl: "#", liveUrl: "#", category: "AI Agentic"},
-        ]);
-        setFilteredProjects(projects);
       }
     };
     fetchProjects();
-  }, []);
+  }, []); // This hook runs only once to fetch data
 
-  // This effect runs whenever the activeCategory or the main projects list changes
+  // CORRECTED: This hook now correctly includes `projects` in its dependency array.
   useEffect(() => {
     if (activeCategory === 'All') {
       setFilteredProjects(projects);
     } else {
-      // Filter the projects based on the selected category
       setFilteredProjects(projects.filter(p => p.category === activeCategory));
     }
   }, [activeCategory, projects]);

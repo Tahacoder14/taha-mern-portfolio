@@ -8,7 +8,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // <-- Use our global auth state
 
 const Contact = () => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  // CORRECTED: `formState: { errors }` has been removed as it was unused.
+  const { register, handleSubmit, reset } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const { userInfo } = useAuth(); // <-- Get user info directly from context
