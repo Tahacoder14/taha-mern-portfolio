@@ -19,7 +19,10 @@ yarn-error.log*
 # =========================================
 .env
 /server/.env
-
+server/.env.local
+server/.env.development.local
+server/.env.test.local
+secret/.env
 # =========================================
 # EDITOR & OS SPECIFIC
 # =========================================
