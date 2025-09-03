@@ -18,7 +18,8 @@ yarn-error.log*
 /server/node_modules
 /server/.env # CRITICAL: Keep your secret keys private!
 /server/coverage
-
+/server/.env
+/server/uploads
 # =========================================
 # CLIENT (React) SPECIFIC
 # =========================================
