@@ -142,7 +142,7 @@ const AuthPage = () => {
             <span className="animate-ping ml-1">_</span>
           </motion.h1>
         </AnimatePresence>
-        <p className="text-center text-gray-400 mb-6 text-sm">// Ready for user input</p>
+        <p className="text-center text-gray-400 mb-6 text-sm">{/* Ready for user input */}</p>
 
         <AnimatePresence mode="wait">
           <AuthForm key={isLoginView ? 'loginForm' : 'signupForm'} isLogin={isLoginView} onSubmit={handleAuth} />
