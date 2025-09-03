@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // The key to global state
+import { useAuth } from '../context/AuthContext';
 
 /**
  * A reusable, animated form component for both login and signup.
@@ -20,10 +20,11 @@ import { useAuth } from '../context/AuthContext'; // The key to global state
  * @param {function} onSubmit - The function to call when the form is submitted.
  */
 const AuthForm = ({ isLogin, onSubmit }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  // MODIFIED: Pass the full `formState` object to avoid potential unused variable warnings.
+  const { register, handleSubmit, formState } = useForm();
+  const { errors } = formState; // Destructure errors here for use in the JSX.
 
   return (
-    // The form itself is a motion component for enter/exit animations
     <motion.form
       initial={{ opacity: 0, x: isLogin ? 100 : -100 }}
       animate={{ opacity: 1, x: 0 }}
@@ -31,9 +32,8 @@ const AuthForm = ({ isLogin, onSubmit }) => {
       transition={{ type: 'spring', stiffness: 260, damping: 25 }}
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-4 font-mono w-full"
-      noValidate // Disable default browser validation to use our own
+      noValidate
     >
-      {/* Conditionally render the "name" field only for the signup form */}
       {!isLogin && (
         <div className="relative">
           <label className="text-sm text-gray-400">_username</label>
@@ -48,7 +48,7 @@ const AuthForm = ({ isLogin, onSubmit }) => {
       <div className="relative">
         <label className="text-sm text-gray-400">_email</label>
         <input
-          type="email" // Use type="email" for semantic HTML and mobile keyboards
+          type="email"
           {...register('email', {
             required: 'Email is required',
             pattern: {
@@ -86,34 +86,28 @@ const AuthForm = ({ isLogin, onSubmit }) => {
  */
 const AuthPage = () => {
   const [isLoginView, setIsLoginView] = useState(true);
-  const { login } = useAuth(); // Use the global login function from our context
-  const navigate = useNavigate(); // Hook for programmatic navigation
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  // Handles form submission for both login and signup
   const handleAuth = async (data) => {
     const endpoint = isLoginView ? '/api/auth/login' : '/api/auth/register';
     const loadingToast = toast.loading(`Executing command...`);
     
     try {
-        const response = await axios.post(endpoint, data);
-      const userData = response.data;
+      const { data: userData } = await axios.post(endpoint, data);
       
       toast.dismiss(loadingToast);
       toast.success('Access Granted!');
       
-      // STEP 1: Update the global state with the user data via the context
       login(userData);
 
-      // STEP 2: Handle the navigation from within this page component
       if (userData.role === 0) {
         navigate('/admin');
       } else {
         navigate('/');
       }
-
     } catch (error) {
       toast.dismiss(loadingToast);
-      // Display the specific error message from the backend, or a generic one
       toast.error(error.response?.data?.message || 'Command failed. Please check your credentials or server status.');
     }
   };
@@ -122,16 +116,14 @@ const AuthPage = () => {
     <div className="min-h-screen bg-dark-bg flex items-center justify-center font-mono text-light-text p-4">
       <Toaster position="top-center" toastOptions={{ style: { background: '#1e1e1e', color: '#e0e0e0' } }} />
       
-      {/* This main container uses the `layout` prop to animate its size when the content changes */}
       <motion.div
         layout
         transition={{ type: 'spring', stiffness: 200, damping: 30 }}
         className="w-full max-w-md bg-card-bg border border-gray-700 rounded-lg shadow-2xl p-8 overflow-hidden"
       >
-        {/* AnimatePresence allows components to animate out when they're removed from the React tree. */}
         <AnimatePresence mode="wait">
           <motion.h1
-            key={isLoginView ? 'loginTitle' : 'signupTitle'} // A unique key tells AnimatePresence to trigger animations
+            key={isLoginView ? 'loginTitle' : 'signupTitle'}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -142,7 +134,9 @@ const AuthPage = () => {
             <span className="animate-ping ml-1">_</span>
           </motion.h1>
         </AnimatePresence>
-        <div className="text-center text-gray-400 mb-6 text-sm">Type Your Credential</div>
+        
+        {/* MODIFIED: Used proper JSX comment syntax */}
+        <p className="text-center text-gray-400 mb-6 text-sm">{/* Type Your Credential */}</p>
 
         <AnimatePresence mode="wait">
           <AuthForm key={isLoginView ? 'loginForm' : 'signupForm'} isLogin={isLoginView} onSubmit={handleAuth} />
