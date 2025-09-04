@@ -7,10 +7,7 @@
     },
     {
       "src": "packages/client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+      "use": "@vercel/static-build"
     }
   ],
   "routes": [
@@ -19,8 +16,20 @@
       "dest": "packages/server/server.js"
     },
     {
+      "src": "/static/(.*)",
+      "dest": "packages/client/build/static/$1"
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "packages/client/build/manifest.json"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "packages/client/build/favicon.ico"
+    },
+    {
       "src": "/(.*)",
-      "dest": "packages/client/build/$1"
+      "dest": "packages/client/build/index.html"
     }
   ]
 }
