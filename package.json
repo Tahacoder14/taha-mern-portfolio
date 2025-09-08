@@ -1,9 +1,0 @@
-{
-  "name": "taha-mern-portfolio-monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "packages/client",
-    "packages/server"
-  ]
-}
