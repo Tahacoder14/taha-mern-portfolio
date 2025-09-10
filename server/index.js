@@ -34,7 +34,7 @@ const corsOptions = {
   // Allow both your local dev server and your future live Vercel URL
   origin: [
     "http://localhost:3000",
-    "https://taha-mern-portfolio.vercel.app" // <-- ADD YOUR FINAL VERCEL URL HERE
+    "https://taha-mern-portfolio.vercel.app/" // <-- ADD YOUR FINAL VERCEL URL HERE
   ],
   optionsSuccessStatus: 200
 };
