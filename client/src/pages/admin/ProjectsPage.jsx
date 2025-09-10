@@ -1,13 +1,12 @@
 // client/src/pages/admin/ProjectsPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
 import AdminLayout from '../admin/AdminLayout';
 import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState([]);
+
 
   // This function uses the custom 'api' instance
   const fetchProjects = useCallback(async () => {
