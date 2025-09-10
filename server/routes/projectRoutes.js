@@ -1,15 +1,10 @@
-// server/routes/projectRoutes.js
+import express from 'express';
+import { getProjects, createProject, deleteProject, getProjectById, updateProject } from '../controllers/projectController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 
-const express = require('express');
 const router = express.Router();
-const { getProjects, createProject, deleteProject } = require('../controllers/projectController');
-const { protect, admin } = require('../middleware/authMiddleware');
 
-// Public route to get projects
-router.route('/').get(getProjects);
+router.route('/').get(getProjects).post(protect, admin, createProject);
+router.route('/:id').get(getProjectById).put(protect, admin, updateProject).delete(protect, admin, deleteProject);
 
-// Admin-only routes to create and delete projects
-router.route('/').post(protect, admin, createProject);
-router.route('/:id').delete(protect, admin, deleteProject);
-
-module.exports = router;
+export default router;

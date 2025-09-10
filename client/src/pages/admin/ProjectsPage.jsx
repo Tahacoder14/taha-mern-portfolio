@@ -1,36 +1,36 @@
 // client/src/pages/admin/ProjectsPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import AdminLayout from '../admin/AdminLayout';
 import toast from 'react-hot-toast';
+import api from '../../api/axiosInstance';
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState([]);
-  const { userInfo } = useAuth();
 
-  const fetchProjects = async () => {
+  // This function uses the custom 'api' instance
+  const fetchProjects = useCallback(async () => {
     try {
-      const { data } = await axios.get('/api/projects');
+      const { data } = await api.get('/api/projects');
       setProjects(data.data);
     } catch (error) {
       toast.error('Could not fetch projects.');
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
   const deleteHandler = async (id) => {
     if (window.confirm('Are you sure?')) {
       try {
-        const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        await axios.delete(`/api/projects/${id}`, config);
-        toast.success('Project deleted');
+        await api.delete(`/api/projects/${id}`); // Correctly uses 'api'
+        toast.success('Project deleted.');
         fetchProjects();
       } catch (error) {
-        toast.error('Delete failed.');
+        toast.error('Deletion failed.');
       }
     }
   };

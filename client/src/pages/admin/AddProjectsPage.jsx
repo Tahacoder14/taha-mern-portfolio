@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import AdminLayout from '../admin/AdminLayout';
 import { FiUploadCloud } from 'react-icons/fi';
 import imageCompression from 'browser-image-compression';
+import api from '../../api/axiosInstance';
 
 const AddProjectPage = () => {
   const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm();
@@ -59,7 +60,7 @@ const AddProjectPage = () => {
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-      await axios.post('/api/projects', data, config);
+      await api.post('/api/projects', data, config);
       toast.dismiss(loadingToast);
       toast.success('Project added! It will now appear on your portfolio.');
       reset();

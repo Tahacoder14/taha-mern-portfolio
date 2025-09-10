@@ -1,30 +1,16 @@
-// server/controllers/authController.js
+import asyncHandler from 'express-async-handler';
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
 
-const asyncHandler = require('express-async-handler');
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-
-// Utility to generate a token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
-  });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
-exports.registerUser = asyncHandler(async (req, res) => {
+export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
   const userExists = await User.findOne({ email });
-
-  if (userExists) {
-    res.status(400);
-    throw new Error('User already exists');
-  }
-
+  if (userExists) { res.status(400); throw new Error('User already exists'); }
   const user = await User.create({ name, email, password });
-
   if (user) {
     res.status(201).json({
       _id: user._id,
@@ -39,13 +25,9 @@ exports.registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Authenticate user & get token
-// @route   POST /api/auth/login
-// @access  Public
-exports.loginUser = asyncHandler(async (req, res) => {
+export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-
   if (user && (await user.matchPassword(password))) {
     res.json({
       _id: user._id,

@@ -1,40 +1,25 @@
-const express = require('express');
+// server/routes/userRoutes.js
+
+// STEP 1: Import the entire 'express' library
+import express from 'express';
+
+// STEP 2: Import the controller and middleware functions, ensuring the .js extension is present
+import { getUsers, deleteUser, updateUserRole } from '../controllers/userController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
+
+// STEP 3: Create the router object by calling the Router() method ON the express object
 const router = express.Router();
 
-// Import controller functions for user logic
-const {
-  getUsers,
-  deleteUser,
-  updateUserRole,
-} = require('../controllers/userController');
+// --- API ROUTES ---
 
-// Import middleware for route protection and role checking
-const { protect, admin } = require('../middleware/authMiddleware');
-
-// =================================================================
-//                            API ROUTES
-// =================================================================
-
-/**
- * @route   GET /api/users
- * @desc    Get all users from the database.
- * @access  Private/Admin
- *
- * This route is protected by two middleware functions:
- * 1. `protect`: Ensures the user is logged in (has a valid token).
- * 2. `admin`: Ensures the logged-in user has an admin role (role: 0).
- */
+// GET /api/users
 router.route('/').get(protect, admin, getUsers);
 
-/**
- * @route   DELETE /api/users/:id
- * @desc    Delete a specific user by their unique ID.
- * @access  Private/Admin
- *
- * This route is also protected by the `protect` and `admin` middleware.
- */
+// DELETE /api/users/:id
 router.route('/:id').delete(protect, admin, deleteUser);
+
+// PUT /api/users/:id/role
 router.route('/:id/role').put(protect, admin, updateUserRole);
 
-
-module.exports = router;
+// STEP 4: Export the router as the default export
+export default router;

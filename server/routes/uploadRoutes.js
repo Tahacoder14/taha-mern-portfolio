@@ -1,9 +1,9 @@
 // server/routes/uploadRoutes.js
 
-const express = require('express');
-const multer = require('multer');
-const { storage } = require('../config/cloudinary'); // Critical: Imports Cloudinary storage config
-const { protect } = require('../middleware/authMiddleware'); // Middleware to protect the route
+import express from 'express'; // Must have this import
+const multer = import('multer');
+const { storage } = import('../config/cloudinary'); // Critical: Imports Cloudinary storage config
+const { protect } = import('../middleware/authMiddleware'); // Middleware to protect the route
 const router = express.Router();
 
 // Initialize multer with the Cloudinary storage engine.
@@ -32,4 +32,4 @@ router.post('/', protect, upload.single('image'), (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

@@ -1,29 +1,14 @@
 // server/models/Contact.js
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const ContactSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please add a name'],
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: [true, 'Please add an email'],
-    match: [
-      /^\S+@\S+$/i,
-      'Please add a valid email address',
-    ],
-  },
-  message: {
-    type: String,
-    required: [true, 'Please add a message'],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+const { Schema, model } = mongoose; // Destructure Schema and model
+
+const ContactSchema = new Schema({
+  name: { type: String, required: [true, 'Please add a name'], trim: true },
+  email: { type: String, required: [true, 'Please add an email'], match: [/^\S+@\S+$/i, 'Please add a valid email'] },
+  message: { type: String, required: [true, 'Please add a message'] },
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Contact', ContactSchema);
+export default model('Contact', ContactSchema);

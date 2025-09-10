@@ -1,29 +1,28 @@
 // server/models/User.js
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
-const UserSchema = new mongoose.Schema({
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+const { Schema, model } = mongoose;
+
+const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: {
-    type: Number,
-    default: 1, // 0 = admin, 1 = user
-  },
+  role: { type: Number, default: 1 },
 }, { timestamps: true });
 
-// Hash password before saving
+// Use a regular function here to ensure 'this' refers to the document
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Method to compare entered password with hashed password
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', UserSchema);
+export default model('User', UserSchema);
