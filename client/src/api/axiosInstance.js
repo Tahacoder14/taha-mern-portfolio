@@ -1,15 +1,17 @@
-// client/src/api/axiosInstance.js
-
 import axios from 'axios';
 
-// Create a new Axios instance. All requests will be relative to the domain
-// the app is running on. In development, the proxy will forward these.
-// In production, Vercel's routes will forward them.
+const baseURL = process.env.NODE_ENV === 'production'
+  ? 'https://taha-mern-portfolio.vercel.app/api'
+  : 'http://localhost:5000/api';
+
 const api = axios.create({
-  baseURL: '/',
+  baseURL,
+  timeout: 15000,
+  headers: {
+    'Content-Type': 'application/json',
+  }
 });
 
-// This interceptor automatically attaches the auth token to every request.
 api.interceptors.request.use(
   (config) => {
     try {
@@ -23,6 +25,14 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
 );

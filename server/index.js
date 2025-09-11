@@ -1,63 +1,43 @@
-/**
- * @fileoverview index.js
- * The main entry point for the backend server application.
- * Initializes Express, connects to MongoDB, sets up middleware,
- * mounts API routes, and implements global error handling.
- */
-
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
-
-// Import all route handlers
 import projectRoutes from './routes/projectRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-
-// Import the new error handling middleware
 import { notFound, errorHandler } from './middleware/authMiddleware.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Initialize configuration
 dotenv.config();
 connectDB();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
-// =================================================================
-//                         CORE MIDDLEWARE
-// =================================================================
-
-// Setup a specific CORS policy for better security
+// CORS configuration
 const corsOptions = {
   origin: [
-    "http://localhost:3000",
-    "https://taha-mern-portfolio.vercel.app", // Remove trailing slash
-    "https://www.taha-mern-portfolio.vercel.app" // Add www subdomain
+    'http://localhost:3000',
+    'https://taha-mern-portfolio.vercel.app',
+    'https://www.taha-mern-portfolio.vercel.app'
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly define allowed methods
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // Allow credentials
   optionsSuccessStatus: 200
 };
+
 app.use(cors(corsOptions));
-
-// Configure Express to parse JSON request bodies with a larger limit for image uploads
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Add URL-encoded parser
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// =================================================================
-//                         MOUNT API ROUTES
-// =================================================================
-
-// Health check route
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'API is running...' });
-});
-
-app.get('/', (req, res) => {
-  res.send('API is running...');
 });
 
 // API routes
@@ -66,13 +46,13 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-// =================================================================
-//                      ERROR HANDLING MIDDLEWARE
-// =================================================================
-// These MUST be the last middleware that are used.
-app.use(notFound);   // Catches requests to non-existent routes
-app.use(errorHandler); // Catches all other errors
+// Error handling
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server running successfully on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+});
