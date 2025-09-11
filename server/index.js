@@ -31,26 +31,36 @@ const app = express();
 
 // Setup a specific CORS policy for better security
 const corsOptions = {
-  // Allow both your local dev server and your future live Vercel URL
   origin: [
     "http://localhost:3000",
-    "https://taha-mern-portfolio.vercel.app/" // <-- ADD YOUR FINAL VERCEL URL HERE
+    "https://taha-mern-portfolio.vercel.app", // Remove trailing slash
+    "https://www.taha-mern-portfolio.vercel.app" // Add www subdomain
   ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly define allowed methods
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Allow credentials
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
 // Configure Express to parse JSON request bodies with a larger limit for image uploads
 app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Add URL-encoded parser
 
 // =================================================================
 //                         MOUNT API ROUTES
 // =================================================================
 
+// Health check route
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'API is running...' });
+});
+
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
+// API routes
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
