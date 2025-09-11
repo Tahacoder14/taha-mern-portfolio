@@ -10,35 +10,41 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "build",
-        "buildCommand": "npm run install-client && npm run build-client"
+        "buildCommand": "cd client && npm install && npm run build"
       }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
-      },
-      "dest": "/server/index.js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+      "dest": "server/index.js"
     },
     {
-      "src": "/static/(.*)",
-      "dest": "/client/build/static/$1"
+      "src": "^/static/(.*)",
+      "dest": "client/build/static/$1"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/client/build/assets/$1"
+      "src": "^/assets/(.*)",
+      "dest": "client/build/assets/$1"
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "client/build/manifest.json"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "client/build/favicon.ico"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "client/build/robots.txt"
     },
     {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/client/build/index.html"
+      "dest": "client/build/index.html"
     }
   ]
 }
