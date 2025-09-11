@@ -1,27 +1,29 @@
-// client/src/App.jsx
-
 import React from 'react';
-import {Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
-// Import Pages
-import PortfolioPage from '../src/pages/PortfolioPage';
-import AuthPage from '../src/pages/AuthPage';
+// Import Pages with correct relative paths
+import PortfolioPage from './pages/PortfolioPage';
+import AuthPage from './pages/AuthPage';
 
-// Import Admin Pages from the correct new location
-import ProjectsPage from '../src/pages/admin/ProjectsPage';
-import UsersPage from '../src/pages/admin/UsersPage';
-import AddProjectPage from '../src/pages/admin/AddProjectsPage';
+// Import Admin Pages
+import ProjectsPage from './pages/admin/ProjectsPage';
+import UsersPage from './pages/admin/UsersPage';
+import AddProjectPage from './pages/admin/AddProjectsPage';
 
 // Import the Protected Route component
-import ProtectedRoute from '../src/components/auth/ProtectedRoute';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   return (
     <>
-      <Toaster position="top-center" toastOptions={{ style: { background: '#1e1e1e', color: '#e0e0e0' } }} />
+      <Toaster 
+        position="top-center" 
+        toastOptions={{ 
+          style: { background: '#1e1e1e', color: '#e0e0e0' } 
+        }} 
+      />
       
-      {/* NO <Router> TAG HERE. Just <Routes> */}
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<PortfolioPage />} />
@@ -35,6 +37,13 @@ function App() {
           <Route path="users" element={<UsersPage />} />
           <Route path="add-project" element={<AddProjectPage />} />
         </Route>
+
+        {/* Catch all route for 404 */}
+        <Route path="*" element={
+          <div className="flex items-center justify-center h-screen">
+            <h1 className="text-2xl">404 - Page Not Found</h1>
+          </div>
+        } />
       </Routes>
     </>
   );
