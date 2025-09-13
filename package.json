@@ -1,12 +1,7 @@
 {
-"name": "client",
-"version": "0.1.0",
-"private": true,
-"homepage": "https://taha-mern-portfolio.vercel.app",
-"scripts": {
-    "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-    }
+  "name": "taha-portfolio-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm install && npm run build"
+  }
 }
