@@ -35,15 +35,35 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'API is running...' });
+// Add a test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!' });
+});
+
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
+// Test routes to verify API is working
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!' });
+});
+
+app.get('/api/debug/projects', async (req, res) => {
+  try {
+    const projects = await Project.find({});
+    res.json({ count: projects.length, data: projects });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // API routes
-app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
 app.use('/api/users', userRoutes);
 
 // Error handling
@@ -56,3 +76,4 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);
 });
+export default app;
