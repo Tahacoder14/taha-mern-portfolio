@@ -5,83 +5,122 @@
       "src": "server/index.js",
       "use": "@vercel/node",
       "config": {
-        "maxLambdaSize": "50mb"
+        "maxLambdaSize": "50mb",
+        "includeFiles": [
+          "server/**/*"
+        ]
       }
     },
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build",
-        "buildCommand": "npm run build",
-        "output": "public"
+        "distDir": "client/build",
+        "buildCommand": "cd client && npm install && npm run build"
       }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/auth/(.*)",
+      "dest": "server/index.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
         "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization",
-        "Access-Control-Allow-Credentials": "true",
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
-        "X-XSS-Protection": "1; mode=block",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
-      },
+        "Access-Control-Allow-Credentials": "true"
+      }
+    },
+    {
+      "src": "/api/projects/(.*)",
       "dest": "server/index.js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    },
+    {
+      "src": "/api/contact/(.*)",
+      "dest": "server/index.js",
+      "methods": ["GET", "POST", "OPTIONS"]
+    },
+    {
+      "src": "/api/users/(.*)",
+      "dest": "server/index.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    },
+    {
+      "src": "/api/upload/(.*)",
+      "dest": "server/index.js",
+      "methods": ["POST", "OPTIONS"]
     },
     {
       "src": "/static/(.*)",
+      "dest": "client/build/static/$1",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable"
-      },
-      "dest": "client/build/static/$1",
-      "continue": true
+      }
     },
     {
       "src": "/assets/(.*)",
+      "dest": "client/build/assets/$1",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable"
-      },
-      "dest": "client/build/assets/$1",
-      "continue": true
-    },
-    {
-      "src": "/(favicon\\.ico|robots\\.txt|manifest\\.json|logo192\\.png|logo512\\.png)",
-      "headers": {
-        "Cache-Control": "public, max-age=3600"
-      },
-      "dest": "client/build/$1"
+      }
     },
     {
       "src": "/cv.pdf",
+      "dest": "client/build/cv.pdf",
       "headers": {
-        "Cache-Control": "public, max-age=3600",
         "Content-Type": "application/pdf",
-        "Content-Disposition": "inline"
-      },
-      "dest": "client/build/cv.pdf"
+        "Content-Disposition": "inline",
+        "Cache-Control": "public, max-age=3600"
+      }
     },
     {
-      "handle": "filesystem"
+      "src": "/(favicon\\.ico|robots\\.txt|manifest\\.json|logo192\\.png|logo512\\.png)",
+      "dest": "client/build/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
     },
     {
       "src": "/(.*)",
+      "dest": "client/build/index.html",
       "headers": {
         "Cache-Control": "public, max-age=0, must-revalidate"
-      },
-      "dest": "client/build/index.html"
+      }
     }
   ],
   "env": {
     "NODE_ENV": "production"
   },
-  "regions": ["dfw1"],
+  "regions": ["iad1"],
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        }
+      ]
+    }
+  ]
 }

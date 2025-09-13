@@ -31,7 +31,8 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-app.use(cors(corsOptions));
+app.use(cors({origin: true,credentials: true})); // <-- Use this for allowing all origins during development
+app.use(cors(corsOptions)); // <-- Use this in production with specific origins
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
