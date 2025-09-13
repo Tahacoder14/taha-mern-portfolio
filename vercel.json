@@ -8,9 +8,7 @@
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+      "config": { "distDir": "build" }
     }
   ],
   "routes": [
@@ -31,28 +29,8 @@
       "dest": "/client/build/favicon.ico"
     },
     {
-      "src": "/logo192.png",
-      "dest": "/client/build/logo192.png"
-    },
-    {
-      "src": "/logo512.png",
-      "dest": "/client/build/logo512.png"
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "/client/build/index.html"
-    },
-    {
-      "src": "/login",
-      "dest": "/client/build/index.html"
-    },
-    {
-      "src": "/register",
-      "dest": "/client/build/index.html"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/client/build/index.html"
+      "dest": "client/build/index.html"
     }
   ]
 }
