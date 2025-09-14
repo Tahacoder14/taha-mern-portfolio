@@ -18,24 +18,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'https://taha-mern-portfolio.vercel.app',
-    'https://www.taha-mern-portfolio.vercel.app'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
-};
+
 
 app.use(cors({
   origin: ['https://taha-mern-portfolio.vercel.app', 'http://localhost:3000'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Add a test endpoint
@@ -64,10 +55,11 @@ app.get('/api/debug/projects', async (req, res) => {
 });
 
 // API routes
-app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/contact', contactRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Error handling
 app.use(notFound);
@@ -79,4 +71,4 @@ app.listen(PORT, () => {
   console.log(`Server working on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);
 });
-export default app;
+module.exports = app;
