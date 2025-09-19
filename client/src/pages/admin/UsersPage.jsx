@@ -1,60 +1,57 @@
-/**
- * @fileoverview UsersPage.jsx
- * The admin dashboard page for viewing and managing all registered users.
- * It fetches user data from a protected backend endpoint and provides admin actions.
- */
+// client/src/pages/admin/UsersPage.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { FiTrash2, FiShield } from 'react-icons/fi';
 import AdminLayout from '../../pages/admin/AdminLayout';
-import api from '../../api/axiosInstance'; // <-- The key change: import our custom API instance
+import api from '../../api/axiosInstance';
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetches all users from a protected endpoint using our authenticated API instance.
+  // Fetches all users from a protected endpoint.
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get('/api/users'); // 'api' automatically adds the auth token
+      const { data } = await api.get('/api/users');
       setUsers(data);
     } catch (error) {
       toast.error('Could not fetch users. Access Denied.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []); // The dependency array is empty because it has no external dependencies
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
-  // Handles deleting a user using an authenticated request.
+  // Handler for deleting a user.
   const deleteHandler = async (id) => {
-    if (window.confirm('Are you sure? This action is permanent.')) {
+    if (window.confirm('Are you sure?')) {
       try {
         await api.delete(`/api/users/${id}`);
         toast.success('User deleted.');
-        fetchUsers();
+        fetchUsers(); // Refresh the list
       } catch (error) {
         toast.error(error.response?.data?.message || 'Deletion failed.');
       }
     }
   };
   
-  // Handles updating a user's role using an authenticated request.
+  // Handler for updating a user's role.
   const roleHandler = async (id) => {
      try {
         await api.put(`/api/users/${id}/role`);
         toast.success('User role updated.');
-        fetchUsers();
+        fetchUsers(); // Refresh the list
       } catch (error) {
         toast.error(error.response?.data?.message || 'Role update failed.');
       }
   };
 
+  // --- THE JSX RETURN STATEMENT (NOW CORRECTLY PLACED) ---
   return (
     <AdminLayout>
       <h1 className="text-3xl font-bold mb-8 text-light-text">Manage Users</h1>
@@ -69,10 +66,10 @@ const UsersPage = () => {
             </tr>
           </thead>
           <tbody>
-             {loading ? (
+            {loading ? (
               <tr><td colSpan="4" className="text-center p-8">Loading Users...</td></tr>
             ) : users.length === 0 ? (
-               <tr><td colSpan="4" className="text-center p-8 text-secondary-text">No users found.</td></tr>
+              <tr><td colSpan="4" className="text-center p-8 text-secondary-text">No users found.</td></tr>
             ) : (
               users.map(user => (
                 <tr key={user._id} className="border-t border-gray-700 hover:bg-dark-bg">
@@ -97,6 +94,6 @@ const UsersPage = () => {
       </div>
     </AdminLayout>
   );
-};
+}; // <-- THE COMPONENT FUNCTION'S CLOSING BRACE IS HERE, CORRECTLY WRAPPING THE RETURN.
 
 export default UsersPage;
