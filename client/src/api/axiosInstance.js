@@ -4,11 +4,9 @@ import axios from 'axios';
 
 // Determine the correct backend URL based on the environment
 const baseURL = process.env.NODE_ENV === 'production'
-  ? 'https://taha-mern-portfolio.vercel.app' // Your live Vercel URL
-  : 'http://localhost:5000';                // Your local backend server
 
 const api = axios.create({
-  baseURL: baseURL,
+  baseURL: 'https://taha-portfolio-api.vercel.app', // <-- PASTE YOUR LIVE RENDER URL HERE
 });
 
 // This interceptor automatically attaches the auth token to every request.
