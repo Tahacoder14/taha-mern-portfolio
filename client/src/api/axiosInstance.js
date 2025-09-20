@@ -2,14 +2,18 @@
 
 import axios from 'axios';
 
-// Determine the correct backend URL based on the environment
-const baseURL = process.env.NODE_ENV === 'production'
+// This logic correctly determines the backend URL.
+// In Vercel, it uses the REACT_APP_BACKEND_API variable.
+// In local development, it will be an empty string, allowing the proxy to work.
+const baseURL = process.env.REACT_APP_BACKEND_API || "";
 
 const api = axios.create({
-  baseURL: 'https://taha-mern-portfolio.vercel.app/', // <-- PASTE YOUR LIVE RENDER URL HERE
+  // THE FIX: Use the 'baseURL' variable instead of a hardcoded string.
+  baseURL: baseURL,
 });
 
 // This interceptor automatically attaches the auth token to every request.
+// This code is perfect and does not need any changes.
 api.interceptors.request.use(
   (config) => {
     try {

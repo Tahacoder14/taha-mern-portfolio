@@ -33,9 +33,9 @@ const app = express();
 
 // Setup a professional CORS policy to allow requests from specific origins
 const allowedOrigins = [
-  'http://localhost:3000',                // YOUR LOCAL REACT DEV SERVER
-  'https://taha-mern-portfolio-qu5j.vercel.app/',   // YOUR FINAL LIVE VERCEL URL
+  process.env.FRONTEND_URL
 ];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
