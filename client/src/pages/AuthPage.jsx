@@ -51,11 +51,15 @@ const AuthPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleAuth = async (data) => {
-    const endpoint = isLoginView ? '/api/auth/login' : '/api/auth/register';
-    const loadingToast = toast.loading(`Executing command...`);
-    try {
-      const { data: userData } = await axios.post(endpoint, data);
+const handleAuth = async (data) => {
+  // THIS IS NOW CORRECT. It starts with /api.
+  const endpoint = isLoginView ? '/api/auth/login' : '/api/auth/register';
+  
+  const loadingToast = toast.loading(`Executing command...`);
+  try {
+    // This will now correctly combine baseURL + endpoint
+      ' https://your-backend.vercel.app + /api/auth/login'
+    const { data: userData } = await api.post(endpoint, data);
       toast.dismiss(loadingToast);
       toast.success('Access Granted!');
       login(userData);
