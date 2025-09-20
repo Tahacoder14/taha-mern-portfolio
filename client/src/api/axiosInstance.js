@@ -6,7 +6,7 @@ import axios from 'axios';
 const baseURL = process.env.NODE_ENV === 'production'
 
 const api = axios.create({
-  baseURL: 'https://taha-portfolio-api.vercel.app', // <-- PASTE YOUR LIVE RENDER URL HERE
+  baseURL: 'https://taha-mern-portfolio.vercel.app/', // <-- PASTE YOUR LIVE RENDER URL HERE
 });
 
 // This interceptor automatically attaches the auth token to every request.
