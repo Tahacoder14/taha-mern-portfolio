@@ -1,14 +1,22 @@
+/**
+ * @fileoverview axiosInstance.js
+ * A centralized, intelligent Axios instance for all frontend API calls.
+ * It automatically handles the base URL for different environments and attaches
+ * the user's auth token to every request.
+ */
 import axios from 'axios';
 
-// This is the key: The baseURL points to the ROOT of your live backend deployment.
-// It should NOT contain /api.
-const baseURL = process.env.REACT_APP_BACKEND_API || 'http://localhost:5000';
+// This logic determines the correct backend URL.
+// In Vercel, it will use the environment variable.
+// In local development, it will be an empty string, allowing the proxy to work.
+const baseURL = process.env.REACT_APP_BACKEND_API || "";
 
 const api = axios.create({
   baseURL: baseURL,
 });
 
-// The interceptor remains the same and is perfect.
+// This interceptor is the key to authenticated requests.
+// It runs before every single request sent using the 'api' instance.
 api.interceptors.request.use(
   (config) => {
     try {

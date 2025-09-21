@@ -21,5 +21,10 @@ router.route('/:id').delete(protect, admin, deleteUser);
 // PUT /api/users/:id/role
 router.route('/:id/role').put(protect, admin, updateUserRole);
 
+router.get('/users', (req, res) => {
+  console.log('Fetching users for user:', req.user); // Debug logged user from JWT
+  // Replace with MongoDB query
+    res.json([{ _id: '1', email: 'test@example.com' }]);
+});
 // STEP 4: Export the router as the default export
 export default router;

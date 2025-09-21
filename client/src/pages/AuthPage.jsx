@@ -1,9 +1,7 @@
-// client/src/pages/AuthPage.jsx
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import api from '../api/axiosInstance'; // Import the axios instance
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -51,19 +49,20 @@ const AuthPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-const handleAuth = async (data) => {
-  // THIS IS NOW CORRECT. It starts with /api.
-  const endpoint = isLoginView ? '/api/auth/login' : '/api/auth/register';
-  
-  const loadingToast = toast.loading(`Executing command...`);
-  try {
-    // This will now correctly combine baseURL + endpoint
-      ' https://your-backend.vercel.app + /api/auth/login'
-    const { data: userData } = await api.post(endpoint, data);
+  const handleAuth = async (data) => {
+    const endpoint = isLoginView ? '/api/auth/login' : '/api/auth/register';
+    
+    const loadingToast = toast.loading(`Executing command...`);
+    try {
+      const { data: userData } = await api.post(endpoint, data);
       toast.dismiss(loadingToast);
       toast.success('Access Granted!');
       login(userData);
-      if (userData.role === 0) { navigate('/admin'); } else { navigate('/'); }
+      if (userData.role === 0) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error(error.response?.data?.message || 'Command failed.');
@@ -79,13 +78,12 @@ const handleAuth = async (data) => {
         className="w-full max-w-md bg-card-bg border border-gray-700 rounded-lg shadow-2xl p-8 overflow-hidden"
       >
         <AnimatePresence mode="wait">
-          <motion.h1 key={isLoginView ? 'loginTitle' : 'signupTitle'} /* ... */ className="text-2xl font-bold text-center text-primary mb-2">
+          <motion.h1 key={isLoginView ? 'loginTitle' : 'signupTitle'} className="text-2xl font-bold text-center text-primary mb-2">
             {isLoginView ? 'User Authentication' : 'Create New Account'}
             <span className="animate-ping ml-1">_</span>
           </motion.h1>
         </AnimatePresence>
         
-        {/* THE CRITICAL FIX: The comment is now correctly inside braces */}
         <p className="text-center text-gray-400 mb-6 text-sm">{/* Ready for user input */}</p>
 
         <AnimatePresence mode="wait">
