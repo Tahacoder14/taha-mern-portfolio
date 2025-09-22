@@ -14,7 +14,7 @@ const UsersPage = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get('/api/users');
+      const { data } = await api.get('https://taha-mern-portfolio.vercel.app/api/users');
       setUsers(data);
     } catch (error) {
       toast.error('Could not fetch users. Access Denied.');
@@ -31,7 +31,7 @@ const UsersPage = () => {
   const deleteHandler = async (id) => {
     if (window.confirm('Are you sure?')) {
       try {
-        await api.delete(`/api/users/${id}`);
+        await api.delete(`https://taha-mern-portfolio.vercel.app/api/users/${id}`);
         toast.success('User deleted.');
         fetchUsers(); // Refresh the list
       } catch (error) {
@@ -43,7 +43,7 @@ const UsersPage = () => {
   // Handler for updating a user's role.
   const roleHandler = async (id) => {
      try {
-        await api.put(`/api/users/${id}/role`);
+        await api.put(`https://taha-mern-portfolio.vercel.app/api/users/${id}/role`);
         toast.success('User role updated.');
         fetchUsers(); // Refresh the list
       } catch (error) {

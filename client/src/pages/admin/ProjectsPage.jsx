@@ -20,7 +20,7 @@ const ProjectsPage = () => {
     setLoading(true);
     try {
       // The GET request for projects is public, but using 'api' is a good, consistent practice.
-      const { data } = await api.get('/api/projects');
+      const { data } = await api.get('https://taha-mern-portfolio.vercel.app/api/projects');
       setProjects(data.data);
     } catch (error) {
       toast.error('Could not fetch projects.');
@@ -37,7 +37,7 @@ const ProjectsPage = () => {
   const deleteHandler = async (id) => {
     if (window.confirm('Are you sure you want to permanently delete this project?')) {
       try {
-        await api.delete(`/api/projects/${id}`); // 'api' automatically adds the auth token
+        await api.delete(`https://taha-mern-portfolio.vercel.app/api/projects/${id}`); // 'api' automatically adds the auth token
         toast.success('Project deleted successfully.');
         fetchProjects(); // Refresh the list after deletion
       } catch (error) {

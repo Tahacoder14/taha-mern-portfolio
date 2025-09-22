@@ -20,7 +20,7 @@ const Portfolio = () => {
    useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const { data } = await axios.get('/api/projects'); // Use relative path
+        const { data } = await axios.get('https://taha-mern-portfolio.vercel.app/api/projects'); // Use relative path
         setProjects(data.data || []);
       } catch (error) {
         console.error("Error fetching projects:", error);

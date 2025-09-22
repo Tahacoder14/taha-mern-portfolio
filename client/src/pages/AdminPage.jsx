@@ -42,10 +42,10 @@ const AdminPage = () => {
       return;
     }
     const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-    api.get('/api/projects', config)
+    api.get('https://taha-mern-portfolio.vercel.app/api/projects', config)
       .then(res => setProjects(res.data.data || []))
       .catch(err => console.error('Projects fetch error:', err));
-    api.get('/api/users', config)
+    api.get('https://taha-mern-portfolio.vercel.app/api/users', config)
       .then(res => setUsers(res.data || []))
       .catch(err => console.error('Users fetch error:', err));
   }, [userInfo?.token, navigate]);

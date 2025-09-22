@@ -59,7 +59,7 @@ const AddProjectPage = () => {
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-      await api.post('/api/projects', data, config);
+      await api.post('https://taha-mern-portfolio.vercel.app/api/projects', data, config);
       toast.dismiss(loadingToast);
       toast.success('Project added! It will now appear on your portfolio.');
       reset();
