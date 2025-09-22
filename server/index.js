@@ -19,10 +19,26 @@ import userRoutes from './routes/userRoutes.js';
 
 // --- Import Professional Error Handling Middleware ---
 import { notFound, errorHandler } from './middleware/authMiddleware.js';
+import { mongo } from 'mongoose';
 
 // Initialize configuration
 dotenv.config();
 connectDB();
+let isConnected = false; // To prevent multiple connections in serverless environment
+async function initDB() {
+  try{
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    isConnected = true;
+    console.log('MongoDB connected');
+
+  }
+  catch(error){
+    console.error('MongoDB connection error:', error);
+  }
+}
 
 const app = express();
 
@@ -34,8 +50,15 @@ const app = express();
 // This is a critical security feature for your live application.
 const allowedOrigins = [
   'http://localhost:3000',                  // Your local React development server
-  'https://taha-mern-portfolio.vercel.app',   // YOUR FINAL LIVE VERCEL URL
+  'https://taha-mern-portfolio-qu5j.vercel.app/',   // YOUR FINAL LIVE VERCEL URL
 ];
+
+app.use((req, res, next) => {
+  if (!isConnected) {
+    initDB();
+  }
+  next();
+});
 
 const corsOptions = {
   origin: function (origin, callback) {
