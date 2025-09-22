@@ -1,22 +1,11 @@
-/**
- * @fileoverview axiosInstance.js
- * A centralized, intelligent Axios instance for all frontend API calls.
- * It automatically handles the base URL for different environments and attaches
- * the user's auth token to every request.
- */
 import axios from 'axios';
 
-// This logic determines the correct backend URL.
-// In Vercel, it will use the environment variable.
-// In local development, it will be an empty string, allowing the proxy to work.
-const baseURL = process.env.REACT_APP_BACKEND_API || "";
-
+// This is the direct, explicit, and permanent connection to your live backend.
 const api = axios.create({
-  baseURL: baseURL,
+  baseURL: 'https://taha-mern-portfolio.vercel.app/api', // <-- YOUR LIVE BACKEND URL
 });
 
-// This interceptor is the key to authenticated requests.
-// It runs before every single request sent using the 'api' instance.
+// This interceptor automatically attaches the auth token to every request.
 api.interceptors.request.use(
   (config) => {
     try {
@@ -25,7 +14,7 @@ api.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${userInfo.token}`;
       }
     } catch (e) {
-      console.error('Could not parse user info or token is missing.', e);
+      // It's okay if this fails silently, the request will just be unauthenticated.
     }
     return config;
   },
