@@ -23,46 +23,32 @@ import { mongoose } from 'mongoose';
 
 // Initialize configuration
 dotenv.config();
-connectDB();
-let isConnected = false; // To prevent multiple connections in serverless environment
-async function initDB() {
-  try{
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+const app = express();
+
+// Connect to MongoDB once during initialization (not per request)
+let isConnected = false;
+if (!isConnected) {
+  connectDB().then(() => {
     isConnected = true;
     console.log('MongoDB connected');
-
-  }
-  catch(error){
+  }).catch((error) => {
     console.error('MongoDB connection error:', error);
-  }
+  });
 }
-
-const app = express();
 
 // =================================================================
 //                         CORE MIDDLEWARE
 // =================================================================
 
 // Setup a professional CORS policy to allow requests from specific origins.
-// This is a critical security feature for your live application.
 const allowedOrigins = [
-  'http://localhost:3000',                  // Your local React development server
-  'https://taha-mern-portfolio-qu5j.vercel.app/',   // YOUR FINAL LIVE VERCEL URL
+  'https://taha-mern-portfolio-qu5j.vercel.app', // Remove trailing slash for exact match
+  'http://localhost:3000',                       // Local development
 ];
 
-app.use((req, res, next) => {
-  if (!isConnected) {
-    initDB();
-  }
-  next();
-});
-
 const corsOptions = {
-  origin: function (origin, callback) {
-    // The `!origin` check allows tools like Postman and server-to-server requests.
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g., Postman, server-to-server)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -70,6 +56,7 @@ const corsOptions = {
     }
   },
   optionsSuccessStatus: 200,
+  credentials: true, // Include if using cookies/auth tokens
 };
 
 app.use(cors(corsOptions));
@@ -81,12 +68,10 @@ app.use(express.json({ limit: '50mb' }));
 //                         MOUNT API ROUTES
 // =================================================================
 
-// A simple root endpoint for the API to confirm it's running when visited directly.
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to the Taha Portfolio API' });
 });
 
-// All application routes are mounted under the '/api' prefix.
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
@@ -95,16 +80,10 @@ app.use('/api/users', userRoutes);
 // =================================================================
 //                      ERROR HANDLING MIDDLEWARE
 // =================================================================
-// These MUST be the last middleware functions used by the app.
-app.use(notFound);   // Catches requests to non-existent API routes.
-app.use(errorHandler); // Catches all other errors and sends a clean JSON response.
-
+app.use(notFound);
+app.use(errorHandler);
 
 // =================================================================
 //                      EXPORT FOR VERCEL
 // =================================================================
-
-// In a serverless environment like Vercel, you export the configured app.
-// Vercel handles the HTTP server creation and listening for requests.
-// The app.listen() call is NOT needed and will cause issues in production.
 export default app;
