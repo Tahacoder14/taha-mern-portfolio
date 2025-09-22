@@ -1,59 +1,87 @@
+/**
+ * @fileoverview index.js
+ * The main entry point for the backend server application.
+ * This file is architected to run as a Vercel Serverless Function.
+ * It initializes the Express application, connects to MongoDB, sets up professional
+ * CORS and error handling middleware, and mounts all API routes.
+ */
+
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 
-// Route handlers
+// --- Import All Route Handlers ---
 import projectRoutes from './routes/projectRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
-// Middleware
+// --- Import Professional Error Handling Middleware ---
 import { notFound, errorHandler } from './middleware/authMiddleware.js';
 
+// Initialize configuration
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// CORS configuration for both local development and production
+// =================================================================
+//                         CORE MIDDLEWARE
+// =================================================================
+
+// Setup a professional CORS policy to allow requests from specific origins.
+// This is a critical security feature for your live application.
 const allowedOrigins = [
-  'http://localhost:3000',
-  'https://taha-mern-portfolio-qu5j.vercel.app', // Your production frontend URL
+  'http://localhost:3000',                  // Your local React development server
+  'https://taha-mern-portfolio.vercel.app',   // YOUR FINAL LIVE VERCEL URL
 ];
+
 const corsOptions = {
-  origin: (origin, callback) => {
+  origin: function (origin, callback) {
+    // The `!origin` check allows tools like Postman and server-to-server requests.
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('This origin is not allowed by CORS'));
     }
   },
+  optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 
-// Body parsers
+// Configure Express to parse large JSON request bodies for image uploads.
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// API Routes
+// =================================================================
+//                         MOUNT API ROUTES
+// =================================================================
+
+// A simple root endpoint for the API to confirm it's running when visited directly.
+app.get('/api', (req, res) => {
+  res.json({ message: 'Welcome to the Taha Portfolio API' });
+});
+
+// All application routes are mounted under the '/api' prefix.
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-// Error handling middleware
-app.use(notFound);
-app.use(errorHandler);
+// =================================================================
+//                      ERROR HANDLING MIDDLEWARE
+// =================================================================
+// These MUST be the last middleware functions used by the app.
+app.use(notFound);   // Catches requests to non-existent API routes.
+app.use(errorHandler); // Catches all other errors and sends a clean JSON response.
 
-// --- SERVER LISTENING LOGIC ---
-const PORT = process.env.PORT || 5000;
 
-// This check prevents the app from trying to listen twice on Vercel
-if (process.env.NODE_ENV !== 'test') { // A common check to avoid issues
-  app.listen(PORT, () => console.log(`Server running successfully on port ${PORT}`));
-}
+// =================================================================
+//                      EXPORT FOR VERCEL
+// =================================================================
 
-// Export the app for Vercel
+// In a serverless environment like Vercel, you export the configured app.
+// Vercel handles the HTTP server creation and listening for requests.
+// The app.listen() call is NOT needed and will cause issues in production.
 export default app;
