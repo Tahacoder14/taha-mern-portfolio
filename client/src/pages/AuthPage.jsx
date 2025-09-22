@@ -50,7 +50,7 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   const handleAuth = async (data) => {
-    const endpoint = isLoginView ? '/api/auth/login' : '/api/auth/register';
+    const endpoint = isLoginView ? 'https://taha-mern-portfolio.vercel.app/api/auth/login' : 'https://taha-mern-portfolio.vercel.app/api/auth/register';
     
     const loadingToast = toast.loading(`Executing command...`);
     try {

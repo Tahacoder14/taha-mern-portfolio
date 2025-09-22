@@ -18,7 +18,7 @@ const Contact = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
     try {
-      await axios.post('http://localhost:5000/api/contact', data);
+      await axios.post('https://taha-mern-portfolio.vercel.app/api/contact', data);
       setSubmitStatus('success');
       reset();
     } catch (error) {

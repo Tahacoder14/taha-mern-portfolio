@@ -13,7 +13,7 @@ const ProtectedRoute = () => {
     return <Outlet />;
   } else {
     // If not an admin, redirect them to the login page
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/https://taha-mern-portfolio.vercel.app/api/auth/login" replace />;
   }
 };
 
