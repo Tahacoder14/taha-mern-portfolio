@@ -19,7 +19,7 @@ import userRoutes from './routes/userRoutes.js';
 
 // --- Import Professional Error Handling Middleware ---
 import { notFound, errorHandler } from './middleware/authMiddleware.js';
-import { mongo } from 'mongoose';
+import { mongoose } from 'mongoose';
 
 // Initialize configuration
 dotenv.config();
