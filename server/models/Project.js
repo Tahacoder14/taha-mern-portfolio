@@ -10,7 +10,7 @@ const ProjectSchema = new Schema({
   imageUrl: { type: String, required: true },
   liveUrl: String,
   repoUrl: String,
-  category: { type: String, required: [true, 'Please add a category'], enum: ['Website', 'AI Agentic', 'UI/UX'] },
+  category: { type: String, required: [true, 'Please add a category'], enum: ['Website', 'AI Agentic', ''] },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -16,14 +16,12 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   return (
-    <>
-      <Toaster 
-        position="top-center" 
-        toastOptions={{ 
-          style: { background: '#1e1e1e', color: '#e0e0e0' } 
-        }} 
-      />
-      
+     <div className="overflow-x-hidden">
+      <Toaster>
+        position="top-center"
+        toastOptions={{
+          style: { background: '#1e1e1e', color: '#e0e0e0' }}}
+      </Toaster>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<PortfolioPage />} />
@@ -45,7 +43,7 @@ function App() {
           </div>
         } />
       </Routes>
-    </>
+    </div>
   );
 }
 
